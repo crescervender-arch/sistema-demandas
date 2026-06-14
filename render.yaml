@@ -1,0 +1,23 @@
+# Blueprint do Render — provisiona o site + banco PostgreSQL automaticamente.
+# No Render: New + > Blueprint > conecte este repositório > Apply.
+databases:
+  - name: demandas-db
+    databaseName: demandas
+    plan: free
+
+services:
+  - type: web
+    name: sistema-demandas
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: demandas-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.12.7

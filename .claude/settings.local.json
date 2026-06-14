@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip --version)",
+      "PowerShell($cmds = @\\(\"python\",\"python3\",\"py\"\\); foreach\\($c in $cmds\\){ $p = \\(Get-Command $c -ErrorAction SilentlyContinue\\); if\\($p\\){ \"$c -> $\\($p.Source\\)\"; & $c --version } else { \"$c -> NOT FOUND\" } })",
+      "PowerShell(py -m pip --version)",
+      "PowerShell(py -c \"import sys; print\\(sys.executable\\)\")",
+      "PowerShell(\"---\")"
+    ]
+  }
+}
