@@ -68,32 +68,99 @@ function logout() {
   location.hash = ""; renderLogin();
 }
 
+function iniciarConstelacao() {
+  const cv = document.getElementById("bgfx");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let w = 0, h = 0, nodes = [];
+  function resize() {
+    w = cv.clientWidth; h = cv.clientHeight;
+    cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const qtd = Math.max(34, Math.min(90, Math.floor((w * h) / 18000)));
+    nodes = Array.from({ length: qtd }, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
+      r: Math.random() * 1.6 + .6, gold: Math.random() < .08,
+    }));
+  }
+  window.addEventListener("resize", resize);
+  resize();
+  (function tick() {
+    if (!document.body.contains(cv)) { window.removeEventListener("resize", resize); return; }
+    ctx.clearRect(0, 0, w, h);
+    for (const n of nodes) {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > w) n.vx *= -1;
+      if (n.y < 0 || n.y > h) n.vy *= -1;
+    }
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < 132) {
+          ctx.strokeStyle = `rgba(41,182,255,${(1 - d / 132) * 0.16})`;
+          ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+      }
+    }
+    for (const n of nodes) {
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = n.gold ? "rgba(240,169,30,.95)" : "rgba(143,224,255,.9)";
+      ctx.shadowColor = n.gold ? "rgba(240,169,30,.85)" : "rgba(41,182,255,.85)";
+      ctx.shadowBlur = 8; ctx.fill(); ctx.shadowBlur = 0;
+    }
+    requestAnimationFrame(tick);
+  })();
+}
+
+function emblemaCrescer() {
+  // Emblema Crescer: árvore de crescimento dentro de um escudo, em linha cyan.
+  return `<svg class="auth-emblem" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="em" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8fe0ff"/><stop offset="1" stop-color="#0081f2"/></linearGradient></defs>
+    <path d="M32 3 L57 13 V32 C57 47 46 56 32 61 C18 56 7 47 7 32 V13 Z"
+      stroke="url(#em)" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M32 50 V26" stroke="url(#em)" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M32 34 C26 32 22 27 22 21 M32 34 C38 32 42 27 42 21 M32 28 C28 26 25 22 25 17 M32 28 C36 26 39 22 39 17"
+      stroke="url(#em)" stroke-width="2.2" stroke-linecap="round"/>
+    <circle cx="22" cy="21" r="2.6" fill="#8fe0ff"/><circle cx="42" cy="21" r="2.6" fill="#8fe0ff"/>
+    <circle cx="25" cy="17" r="2.2" fill="#29b6ff"/><circle cx="39" cy="17" r="2.2" fill="#29b6ff"/>
+    <circle cx="32" cy="13" r="3" fill="#f0a91e"/>
+  </svg>`;
+}
+
 function renderLogin() {
   root.innerHTML = `
-  <div class="login-wrap">
-    <div class="login-hero">
-      <div class="brand">Crescer Tecnologia e Gestão</div>
-      <h1>Controle de Demandas Jurídicas</h1>
-      <div class="gold-bar"></div>
-      <p>Gestão operacional e financeira das demandas do escritório: prazos, alocação por profissional, SLA e KPIs da controladoria em tempo real.</p>
-      <div class="login-feats">
-        <div><span class="dot"></span> Zero perda de prazo processual</div>
-        <div><span class="dot"></span> Controle de acesso por perfil (RBAC)</div>
-        <div><span class="dot"></span> Dashboard da controladoria com 6 KPIs</div>
+  <div class="auth">
+    <canvas id="bgfx"></canvas>
+    <div class="auth-grid">
+      <div class="auth-hero">
+        <div class="auth-brand">
+          <img src="/logo-crescer.png" alt="Crescer" class="auth-logo" onerror="this.outerHTML=emblemaCrescer()">
+          <div class="auth-wordmark"><b>CRESCER<span> IA</span></b><small>Tecnologia &amp; Gestão</small></div>
+        </div>
+        <span class="auth-badge"><span class="spark">✦</span> Controladoria Jurídica 360°</span>
+        <h1 class="auth-title">Controle de<br>Demandas <em>Jurídicas</em></h1>
+        <div class="auth-goldbar"></div>
+        <p class="auth-lead">Inteligência operacional e financeira do escritório: prazos, alocação por profissional, SLA e KPIs da controladoria — decisões baseadas em dados reais.</p>
+        <div class="auth-feats">
+          <div><span class="dot"></span> Zero perda de prazo processual</div>
+          <div><span class="dot"></span> Controle de acesso por perfil (RBAC)</div>
+          <div><span class="dot"></span> Dashboard da controladoria em tempo real</div>
+        </div>
+      </div>
+      <div class="auth-panel-col">
+        <form class="auth-panel" id="loginForm">
+          <h2>Acessar o sistema</h2>
+          <div class="sub">Entre com suas credenciais para continuar</div>
+          <label class="field"><span>E-mail</span><input type="email" id="email" placeholder="seu.email@crescertecnologia.com" autocomplete="username" required></label>
+          <label class="field"><span>Senha</span><input type="password" id="senha" placeholder="••••••••" autocomplete="current-password" required></label>
+          <button class="btn block" id="btnLogin" type="submit">Entrar →</button>
+        </form>
       </div>
     </div>
-    <div class="login-form-col">
-      <form class="login-card" id="loginForm">
-        <h2>Entrar</h2>
-        <div class="sub">Acesse o sistema com suas credenciais</div>
-        <label class="field"><span>E-mail</span><input type="email" id="email" placeholder="voce@bbz.adv.br" autocomplete="username" required></label>
-        <label class="field"><span>Senha</span><input type="password" id="senha" placeholder="••••••••" autocomplete="current-password" required></label>
-        <button class="btn block" id="btnLogin" type="submit">Entrar</button>
-        <div class="hint"><b>Login master (demonstração):</b><br>master@bbz.adv.br &nbsp;/&nbsp; master123<br>
-        Outros: socio@bbz.adv.br · gestor.trab@bbz.adv.br · adv1@bbz.adv.br · estag1@bbz.adv.br</div>
-      </form>
-    </div>
   </div>`;
+  iniciarConstelacao();
   $("#loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = $("#btnLogin"); btn.disabled = true; btn.textContent = "Entrando...";

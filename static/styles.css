@@ -34,38 +34,104 @@ button { font-family: inherit; cursor: pointer; }
 a { color: var(--teal-dark); }
 .hidden { display: none !important; }
 
-/* ----------------------------- LOGIN --------------------------------- */
-.login-wrap {
-  min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr;
+/* ===================== LOGIN — Identidade Crescer IA ================== */
+/* Direção: cockpit jurídico futurista · canvas escuro + constelação viva  */
+/* + emblema Crescer em cyan brilhante + cartão de acesso em vidro.        */
+.auth {
+  --c-bg: #050d1a; --c-cyan: #29b6ff; --c-cyan-deep: #0081f2; --c-cyan-bright: #8fe0ff;
+  --c-gold: #f0a91e; --c-ink: #eaf2fb; --c-muted: #93a9c6;
+  position: relative; min-height: 100vh; overflow: hidden;
+  background:
+    radial-gradient(1100px 700px at 18% 8%, rgba(0,129,242,.16), transparent 60%),
+    radial-gradient(900px 600px at 92% 90%, rgba(41,182,255,.10), transparent 55%),
+    radial-gradient(600px 600px at 80% 0%, rgba(240,169,30,.06), transparent 60%),
+    var(--c-bg);
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  color: var(--c-ink);
 }
-.login-hero {
-  background: linear-gradient(150deg, var(--navy) 0%, var(--teal-dark) 100%);
-  color: #fff; padding: 56px; display: flex; flex-direction: column; justify-content: center;
-  position: relative; overflow: hidden;
+.auth * { font-family: inherit; }
+#bgfx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; }
+.auth-grid {
+  position: relative; z-index: 2; min-height: 100vh;
+  display: grid; grid-template-columns: 1.15fr .85fr; align-items: center;
 }
-.login-hero::after {
-  content: ""; position: absolute; right: -120px; top: -120px; width: 360px; height: 360px;
-  background: radial-gradient(circle, rgba(224,165,38,.25), transparent 70%);
-}
-.login-hero .brand { font-size: 13px; letter-spacing: 3px; opacity: .8; text-transform: uppercase; }
-.login-hero h1 { font-size: 40px; line-height: 1.1; margin: 18px 0; font-weight: 800; }
-.login-hero p { opacity: .85; max-width: 420px; line-height: 1.6; }
-.login-hero .gold-bar { width: 64px; height: 5px; background: var(--gold); border-radius: 3px; margin: 24px 0; }
-.login-feats { margin-top: 36px; display: flex; flex-direction: column; gap: 12px; }
-.login-feats div { display: flex; align-items: center; gap: 10px; opacity: .92; }
-.login-feats span.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
 
-.login-form-col { display: flex; align-items: center; justify-content: center; padding: 40px; }
-.login-card { width: 100%; max-width: 380px; }
-.login-card h2 { font-size: 24px; margin-bottom: 6px; }
-.login-card .sub { color: var(--muted); margin-bottom: 28px; }
-.hint {
-  margin-top: 20px; background: var(--teal-50); border: 1px solid #cfe6ea; color: #0d5562;
-  border-radius: 10px; padding: 12px 14px; font-size: 12.5px; line-height: 1.6;
+/* ---- HERO ---- */
+.auth-hero { padding: 6vh 6vw; max-width: 620px; }
+.auth-brand { display: flex; align-items: center; gap: 14px; margin-bottom: 30px; }
+.auth-emblem { width: 50px; height: 50px; filter: drop-shadow(0 0 10px rgba(41,182,255,.65)); }
+.auth-logo { height: 64px; width: auto; object-fit: contain; filter: drop-shadow(0 0 14px rgba(41,182,255,.5)); }
+.auth-wordmark { line-height: 1; }
+.auth-wordmark b {
+  display: block; font-size: 22px; font-weight: 800; letter-spacing: 4px; color: #fff;
 }
-.hint b { color: var(--teal-dark); }
+.auth-wordmark b span { color: var(--c-cyan); }
+.auth-wordmark small { font-size: 10.5px; letter-spacing: 3px; color: var(--c-muted); text-transform: uppercase; }
+.auth-badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 15px; border-radius: 999px;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--c-cyan-bright); background: rgba(41,182,255,.08);
+  border: 1px solid rgba(41,182,255,.30); box-shadow: 0 0 26px rgba(41,182,255,.16) inset;
+}
+.auth-badge .spark { color: var(--c-gold); }
+.auth-title {
+  font-size: clamp(34px, 4.6vw, 60px); font-weight: 800; line-height: 1.04; letter-spacing: -1px;
+  margin: 22px 0 0; color: #fff;
+}
+.auth-title em { font-style: normal; color: var(--c-cyan);
+  text-shadow: 0 0 34px rgba(41,182,255,.45); }
+.auth-goldbar { width: 66px; height: 4px; border-radius: 3px; margin: 22px 0;
+  background: linear-gradient(90deg, var(--c-gold), rgba(240,169,30,0)); }
+.auth-lead { color: var(--c-muted); max-width: 460px; line-height: 1.65; font-size: 15px; }
+.auth-feats { margin-top: 30px; display: flex; flex-direction: column; gap: 13px; }
+.auth-feats div { display: flex; align-items: center; gap: 12px; color: #c6d6ea; font-size: 14px; }
+.auth-feats .dot {
+  width: 9px; height: 9px; border-radius: 50%; background: var(--c-cyan);
+  box-shadow: 0 0 12px var(--c-cyan); flex: none;
+}
 
-@media (max-width: 880px) { .login-wrap { grid-template-columns: 1fr; } .login-hero { display: none; } }
+/* ---- CARTÃO DE ACESSO (glass) ---- */
+.auth-panel-col { display: flex; align-items: center; justify-content: center; padding: 5vh 5vw; }
+.auth-panel {
+  width: 100%; max-width: 400px; padding: 34px 32px; border-radius: 20px;
+  background: linear-gradient(180deg, rgba(17,32,54,.72), rgba(8,18,34,.78));
+  border: 1px solid rgba(120,170,230,.20);
+  box-shadow: 0 30px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(41,182,255,.05),
+              inset 0 1px 0 rgba(255,255,255,.06);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.auth-panel h2 { font-size: 25px; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+.auth-panel .sub { color: var(--c-muted); margin: 6px 0 26px; font-size: 13.5px; }
+
+.auth .field > span { color: #aebfd6; }
+.auth input {
+  background: rgba(255,255,255,.045); border: 1px solid rgba(130,170,220,.22);
+  color: var(--c-ink); border-radius: 11px; padding: 12px 13px;
+}
+.auth input::placeholder { color: #5d7390; }
+.auth input:focus {
+  outline: none; border-color: var(--c-cyan);
+  box-shadow: 0 0 0 3px rgba(41,182,255,.16), 0 0 24px rgba(41,182,255,.22);
+}
+.auth .btn.block {
+  margin-top: 4px; border-radius: 11px; font-size: 15px; font-weight: 700; padding: 12px 16px;
+  background: linear-gradient(180deg, #1aa3ff, var(--c-cyan-deep));
+  box-shadow: 0 10px 26px rgba(0,129,242,.42), inset 0 1px 0 rgba(255,255,255,.28);
+}
+.auth .btn.block:hover { filter: brightness(1.07); box-shadow: 0 14px 34px rgba(0,129,242,.6); }
+.auth-hint {
+  margin-top: 20px; background: rgba(41,182,255,.07); border: 1px solid rgba(41,182,255,.22);
+  color: #bcd2ec; border-radius: 12px; padding: 13px 15px; font-size: 12.5px; line-height: 1.7;
+}
+.auth-hint b { color: var(--c-cyan-bright); }
+
+@media (max-width: 920px) {
+  .auth-grid { grid-template-columns: 1fr; padding: 28px 0; gap: 8px; }
+  .auth-hero { padding: 4vh 7vw 0; max-width: 100%; }
+  .auth-title { font-size: clamp(30px, 8vw, 42px); }
+  .auth-feats { display: none; }
+  .auth-panel-col { padding: 8px 7vw 5vh; }
+}
 
 /* ----------------------------- FORM ELEMENTS ------------------------- */
 label.field { display: block; margin-bottom: 14px; }
