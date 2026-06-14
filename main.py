@@ -592,6 +592,32 @@ def dashboard(usuario: models.Usuario = Depends(usuario_atual), db: Session = De
 
 
 # --------------------------------------------------------------------------- #
+# ADMINISTRAÇÃO (somente master)
+# --------------------------------------------------------------------------- #
+@app.post("/api/admin/limpar-demo")
+def limpar_demo(usuario: models.Usuario = Depends(usuario_atual), db: Session = Depends(get_db)):
+    """Apaga TODOS os dados (demandas, núcleos e usuários), mantendo apenas o
+    master logado. Usado para sair dos dados de exemplo e começar do zero."""
+    exigir(usuario, "master")
+    # 1) tabelas filhas
+    db.query(models.Movimentacao).delete(synchronize_session=False)
+    db.query(models.EventoSla).delete(synchronize_session=False)
+    db.query(models.Alocacao).delete(synchronize_session=False)
+    db.query(models.Demanda).delete(synchronize_session=False)
+    # 2) quebra os vínculos de FK antes de remover núcleos/usuários
+    db.query(models.Nucleo).update({models.Nucleo.gestor_id: None}, synchronize_session=False)
+    db.query(models.Usuario).update(
+        {models.Usuario.nucleo_id: None, models.Usuario.gestor_id: None, models.Usuario.carga_atual: 0},
+        synchronize_session=False,
+    )
+    # 3) remove todos os usuários, exceto o master atual, e todos os núcleos
+    db.query(models.Usuario).filter(models.Usuario.id != usuario.id).delete(synchronize_session=False)
+    db.query(models.Nucleo).delete(synchronize_session=False)
+    db.commit()
+    return {"ok": True, "mensagem": "Dados de demonstração removidos. Apenas o login master foi mantido."}
+
+
+# --------------------------------------------------------------------------- #
 # Metadados úteis para os formulários do frontend
 # --------------------------------------------------------------------------- #
 @app.get("/api/meta")

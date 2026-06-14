@@ -628,7 +628,29 @@ function pageConta() {
         <label class="field"><span>Confirmar nova senha</span><input type="password" id="c_conf"></label>
         <button class="btn" id="btnSenha">Salvar nova senha</button>
       </div>
-    </div>`);
+    </div>
+    ${can("master") ? `
+    <div class="panel section-gap" style="border-color:#f3c9c9">
+      <h3 style="color:var(--red)">Zona de administração</h3>
+      <div class="psub">Ações exclusivas do master. Use com cuidado.</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="max-width:520px">
+          <b>Limpar dados de demonstração</b>
+          <div class="muted" style="line-height:1.6;margin-top:4px">Remove todas as demandas, núcleos e usuários fictícios, mantendo apenas o seu login master. Use isto para começar a cadastrar os dados reais do escritório do zero. <b>Esta ação não pode ser desfeita.</b></div>
+        </div>
+        <button class="btn danger" id="btnLimpar">Limpar dados de demonstração</button>
+      </div>
+    </div>` : ""}`);
+  if (can("master")) $("#btnLimpar").onclick = async () => {
+    const txt = prompt('Isso vai APAGAR todas as demandas, núcleos e usuários (exceto você).\nPara confirmar, digite:  LIMPAR');
+    if (txt !== "LIMPAR") return toast("Cancelado — nada foi apagado.");
+    try {
+      const r = await api("POST", "/admin/limpar-demo");
+      await carregarBase();
+      toast(r.mensagem || "Dados removidos", "ok");
+      location.hash = "#/demandas"; router();
+    } catch (e) { toast(e.message, "err"); }
+  };
   $("#btnSenha").onclick = async () => {
     const nova = $("#c_nova").value, conf = $("#c_conf").value;
     if (nova.length < 4) return toast("A nova senha deve ter ao menos 4 caracteres", "err");
